@@ -1,0 +1,440 @@
+basePath: /
+definitions:
+  managers.OrderView:
+    properties:
+      order:
+        $ref: '#/definitions/types.Order'
+      productView:
+        $ref: '#/definitions/managers.ProductView'
+    type: object
+  managers.ProductView:
+    properties:
+      material:
+        $ref: '#/definitions/types.Material'
+      product:
+        $ref: '#/definitions/types.Product'
+      status:
+        $ref: '#/definitions/types.Status'
+    type: object
+  services.Response:
+    properties:
+      data: {}
+      error: {}
+      success:
+        type: boolean
+    type: object
+  types.CreateOrder:
+    properties:
+      delivery:
+        type: string
+      description:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      order_email:
+        type: string
+      product_id:
+        type: integer
+    type: object
+  types.CreateProduct:
+    properties:
+      material_id:
+        type: integer
+      price:
+        type: integer
+      title:
+        type: string
+    type: object
+  types.Material:
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  types.Order:
+    properties:
+      delivery:
+        type: string
+      description:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      manager_id:
+        type: string
+      order_email:
+        type: string
+      product_id:
+        type: integer
+      uuid:
+        type: string
+    type: object
+  types.Product:
+    properties:
+      id:
+        type: integer
+      material_id:
+        type: integer
+      price:
+        type: integer
+      status_id:
+        $ref: '#/definitions/types.StatusID'
+      title:
+        type: string
+    type: object
+  types.Status:
+    properties:
+      id:
+        $ref: '#/definitions/types.StatusID'
+      text_code:
+        $ref: '#/definitions/types.StatusTextCode'
+    type: object
+  types.StatusID:
+    enum:
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - LockedInt
+    - UnLockedInt
+    - SoldInt
+  types.StatusTextCode:
+    enum:
+    - LOCKED
+    - UNLOCKED
+    - SOLD
+    type: string
+    x-enum-varnames:
+    - Locked
+    - UnLocked
+    - Sold
+  types.UpdateProduct:
+    properties:
+      id:
+        type: integer
+      material_id:
+        type: integer
+      price:
+        type: integer
+      status_id:
+        $ref: '#/definitions/types.StatusID'
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Jewelry API
+  title: Jewelry API
+  version: "1.0"
+paths:
+  /admins/orders/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: deletes product by id
+      parameters:
+      - description: admin`s X-Api-Key
+        in: header
+        name: X-Api-Key
+        required: true
+        type: string
+      - description: order uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.Response'
+      summary: delete order by id
+      tags:
+      - Admins
+  /admins/products/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: updates product
+      parameters:
+      - description: admin`s X-Api-Key
+        in: header
+        name: X-Api-Key
+        required: true
+        type: string
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: update product body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/services.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.Product'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.Response'
+      summary: update product
+      tags:
+      - Admins
+  /managers/orders:
+    get:
+      consumes:
+      - application/json
+      description: returns all orders
+      parameters:
+      - description: managers`s api key
+        in: header
+        name: X-UUID-Key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/services.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/managers.OrderView'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.Response'
+      summary: get all orders
+      tags:
+      - Managers
+  /managers/orders/{status}:
+    get:
+      consumes:
+      - application/json
+      description: returns orders by  product status
+      parameters:
+      - description: managers`s api key
+        in: header
+        name: X-UUID-Key
+        required: true
+        type: string
+      - description: product status
+        in: path
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/services.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/managers.OrderView'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/services.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.Response'
+      summary: get orders by product status
+      tags:
+      - Managers
+  /managers/products:
+    post:
+      consumes:
+      - application/json
+      description: creates product
+      parameters:
+      - description: managers`s api key
+        in: header
+        name: X-UUID-Key
+        required: true
+        type: string
+      - description: create product body
+        in: body
+        name: manager
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateProduct'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/services.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/managers.ProductView'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.Response'
+      summary: create product
+      tags:
+      - Managers
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: returns all products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/services.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/managers.ProductView'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/services.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.Response'
+      summary: get all products
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: creates order
+      parameters:
+      - description: create order request
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateOrder'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/services.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/managers.OrderView'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/services.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: obj0ect
+      summary: create order
+      tags:
+      - Users
+  /users/{status}:
+    get:
+      consumes:
+      - application/json
+      description: returns products by status
+      parameters:
+      - description: product status
+        in: path
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/services.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/managers.ProductView'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/services.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/services.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/services.Response'
+      summary: get products by status
+      tags:
+      - Users
+swagger: "2.0"

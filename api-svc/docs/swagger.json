@@ -1,0 +1,695 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Jewelry API",
+        "title": "Jewelry API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/admins/orders/{uuid}": {
+            "delete": {
+                "description": "deletes product by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "delete order by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "admin`s X-Api-Key",
+                        "name": "X-Api-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "order uuid",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admins/products/{id}": {
+            "patch": {
+                "description": "updates product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "update product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "admin`s X-Api-Key",
+                        "name": "X-Api-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "product id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "update product body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateProduct"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/services.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/types.Product"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/managers/orders": {
+            "get": {
+                "description": "returns all orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "get all orders",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "managers`s api key",
+                        "name": "X-UUID-Key",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/services.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/managers.OrderView"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/managers/orders/{status}": {
+            "get": {
+                "description": "returns orders by  product status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "get orders by product status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "managers`s api key",
+                        "name": "X-UUID-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "product status",
+                        "name": "status",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/services.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/managers.OrderView"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/managers/products": {
+            "post": {
+                "description": "creates product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "create product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "managers`s api key",
+                        "name": "X-UUID-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "create product body",
+                        "name": "manager",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CreateProduct"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/services.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/managers.ProductView"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "returns all products",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get all products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/services.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/managers.ProductView"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "creates order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "create order",
+                "parameters": [
+                    {
+                        "description": "create order request",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CreateOrder"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/services.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/managers.OrderView"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "obj0ect"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{status}": {
+            "get": {
+                "description": "returns products by status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get products by status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product status",
+                        "name": "status",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/services.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/managers.ProductView"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/services.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "managers.OrderView": {
+            "type": "object",
+            "properties": {
+                "order": {
+                    "$ref": "#/definitions/types.Order"
+                },
+                "productView": {
+                    "$ref": "#/definitions/managers.ProductView"
+                }
+            }
+        },
+        "managers.ProductView": {
+            "type": "object",
+            "properties": {
+                "material": {
+                    "$ref": "#/definitions/types.Material"
+                },
+                "product": {
+                    "$ref": "#/definitions/types.Product"
+                },
+                "status": {
+                    "$ref": "#/definitions/types.Status"
+                }
+            }
+        },
+        "services.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {},
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "types.CreateOrder": {
+            "type": "object",
+            "properties": {
+                "delivery": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "order_email": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.CreateProduct": {
+            "type": "object",
+            "properties": {
+                "material_id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.Material": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.Order": {
+            "type": "object",
+            "properties": {
+                "delivery": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "manager_id": {
+                    "type": "string"
+                },
+                "order_email": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "integer"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.Product": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "material_id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "status_id": {
+                    "$ref": "#/definitions/types.StatusID"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.Status": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/types.StatusID"
+                },
+                "text_code": {
+                    "$ref": "#/definitions/types.StatusTextCode"
+                }
+            }
+        },
+        "types.StatusID": {
+            "type": "integer",
+            "enum": [
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "LockedInt",
+                "UnLockedInt",
+                "SoldInt"
+            ]
+        },
+        "types.StatusTextCode": {
+            "type": "string",
+            "enum": [
+                "LOCKED",
+                "UNLOCKED",
+                "SOLD"
+            ],
+            "x-enum-varnames": [
+                "Locked",
+                "UnLocked",
+                "Sold"
+            ]
+        },
+        "types.UpdateProduct": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "material_id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "status_id": {
+                    "$ref": "#/definitions/types.StatusID"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
